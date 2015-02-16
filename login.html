@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+   <head>
+     <style>
+	   h1{
+	   text-align: Left;
+	   color: white;
+	   }
+	   
+	   p1{
+	   text-align: Left;
+	   color: white;
+	   }
+	   
+	   body{
+	   background-color: #303030
+	   }
+	 </style>
+   </head>
+   
+   <body>
+        
+     <h1>Login</h1>
+     <p1>Whats the Password?</p1><br/>
+	 
+	 <input type="text" id="insertedPassword"/>
+	 <button type="button" onclick="checkLogin()">Login</button>
+	 <p1 id="info"></p1><br/	>
+   </body>
+   
+   <script>
+    function checkLogin(){
+	    var passwords = new Array("alex", "password", "1234", "banana");
+		
+		//document.getElementById("insertedPassword").value = passwords[0];
+		for(i = 0; i < passwords.length; i++){
+		   if(document.getElementById("insertedPassword").value == passwords[i]){
+			  document.getElementById("info").innerHTML = "Welcome";
+		   } else{
+		      document.getElementById("info").innerHTML = "Invalid";
+		   }
+		}
+	}
+   </script>
+</html>
