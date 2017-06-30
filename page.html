@@ -1,0 +1,118 @@
+<html>
+<title>Swah</title>
+
+<body>
+    <canvas id="canvas" style="background: cornflowerblue" width="500px" height="300px"></canvas>
+</body>
+
+<script>
+    var canvasElement;
+    var context;
+
+    var snake = [];
+
+    window.onload = () => {
+        canvasElement = document.getElementById("canvas");
+        canvasElement.onkeypress = (event) => {
+            //up
+            if (event.keyCode == 87 || event.keyCode == 38) {
+                snake[0].currentDirection = snakeDirection.Up;
+            }
+            //down
+            else if (event.keyCode == 83 || event.keyCode == 40) {
+                snake[0].currentDirection = snakeDirection.Down;
+            }
+            //left
+            else if (event.keyCode == 65 || event.keyCode == 37) {
+                snake[0].currentDirection = snakeDirection.Left;
+            }
+            //right
+            else if (event.keyCode == 68 || event.keyCode == 39) {
+                snake[0].currentDirection = snakeDirection.Right;
+            }
+        };
+        canvasElement.setAttribute("tabindex", 0);
+        canvasElement.focus();
+
+        context = canvasElement.getContext("2d");
+        snake.push(new SnakePiece(new Vector2(10, 10), 10, "red"));
+
+        setInterval(gameLoop(), 1000/60 );
+    };
+
+    function Vector2(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    class Sprite {
+        constructor(position, width, height, color) {
+            this.position = position;
+            this.width = width;
+            this.height = height;
+            this.color = color;
+        }
+
+        draw() {
+            context.beginPath();
+            context.fillStyle = this.color;
+            context.fillRect(this.position.x, this.position.y, this.width, this.height);
+            context.closePath();
+        }
+    }
+
+    var snakeDirection = {
+        None: 0,
+        Left: 1,
+        Right: 2,
+        Up: 3,
+        Down: 4
+    };
+
+    class SnakePiece extends Sprite {
+        constructor(position, size, color) {
+            super(position, size, size, color);
+            this.currentDirection = snakeDirection.None;
+        }
+
+        update() {
+            if (this.currentDirection == snakeDirection.Left) {
+                this.position.x -= this.width;
+            }
+            else if (this.currentDirection == snakeDirection.Right) {
+                this.position.x += this.width;
+            }
+            else if (this.currentDirection == snakeDirection.Up) {
+                this.position.y += this.height;
+            }
+            else if (this.currentDirection == snakeDirection.Down) {
+                this.position.y -= this.height;
+            }
+        }
+
+        draw() {
+            super.draw();
+        }
+    }
+
+    function gameLoop() {
+        context.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        update();
+        draw();
+    }
+
+    function update() {
+        for (var i = 0; i < snake.length; i++) {
+            snake[i].update();
+        }
+    }
+
+    function draw() {
+        for (var i = 0; i < snake.length; i++) {
+            snake[i].draw();
+        }
+    }
+
+</script>
+
+</html>
