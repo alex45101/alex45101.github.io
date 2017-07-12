@@ -1,9 +1,24 @@
 <html>
+
+<style>
+    body {
+        background: orange;
+        padding-top: 10px;
+    }
+
+    canvas {
+        background: #80bdff;    
+        padding: 0;        
+        margin: auto;
+        display: block;
+        width: 1850px;
+    }
+</style>
+
 <title>Swah</title>
 
 <body>
-    <canvas id="canvas" style="background: cornflowerblue; border-style: solid; border-width: 15px; border-color: Orange" width="1200px"
-        height="800px"></canvas>
+    <canvas id="canvas" width="1800px" height="1000px"></canvas>
 </body>
 
 <script>
@@ -49,13 +64,13 @@
         canvasElement.focus();
 
         context = canvasElement.getContext("2d");
-        snake.push(new SnakePiece(new Vector2(20, 20), 20, "red"));
+        snake.push(new SnakePiece(new Vector2(20, 20), 20, 20, "#ff3333"));
 
         food = new Food(new Vector2(100, 200), 20, "yellow");
 
         scoreLabel = new Label("30px Arial", snake.length, new Vector2(canvasElement.width - 50, 40), "Black");
 
-        setInterval(gameLoop, 80);
+        setInterval(gameLoop, 50);
     };
 
     function Vector2(x, y) {
@@ -120,10 +135,11 @@
             return new HitBox(this.position.x, this.position.y, this.width, this.height);
         }
 
-        constructor(position, size, color) {
+        constructor(position, size, speed, color) {
             super(position, size, size, color);
             this.currentDirection = snakeDirection.None;
             this.nextDirection = snakeDirection.None;
+            this.speed = speed;
         }
 
         update() {
@@ -155,20 +171,25 @@
             }
 
             if (this.currentDirection == snakeDirection.Left) {
-                this.position.x -= this.width;
+                this.position.x -= this.speed;
             }
             else if (this.currentDirection == snakeDirection.Right) {
-                this.position.x += this.width;
+                this.position.x += this.speed;
             }
             else if (this.currentDirection == snakeDirection.Up) {
-                this.position.y -= this.height;
+                this.position.y -= this.speed;
             }
             else if (this.currentDirection == snakeDirection.Down) {
-                this.position.y += this.height;
+                this.position.y += this.speed;
             }
         }
 
         draw() {
+            context.beginPath();
+            context.lineWidth = 4;
+            context.strokeStyle = "#80bdff";
+            context.strokeRect(this.position.x, this.position.y, this.width, this.height);
+            context.closePath();
             super.draw();
         }
     }
@@ -186,7 +207,7 @@
     function lose() {
         snake = [];
 
-        snake.push(new SnakePiece(new Vector2(20, 20), 20, "red"));
+        snake.push(new SnakePiece(new Vector2(20, 20), 20, 20, "#ff3333"));
         food = new Food(new Vector2(100, 200), 20, "yellow");
         scoreLabel.text = snake.length;
     }
@@ -198,6 +219,7 @@
     }
 
     function update() {
+        //head hits body and snake update
         for (var i = 0; i < snake.length; i++) {
             for (var j = 0; j < snake.length; j++) {
                 if (i != j && snake[i].hitbox().intersects(snake[j].hitbox())) {
@@ -209,14 +231,17 @@
             snake[i].update();
         }
 
+        //hitting walls
         if (snake[0].position.x < 0 || snake[0].position.x + snake[0].width > canvasElement.width || snake[0].position.y < 0 || snake[0].position.y + snake[0].height > canvasElement.height) {
             lose();
         }
 
+        //following 
         for (var i = snake.length - 1; i > 0; i--) {
             snake[i].currentDirection = snake[i - 1].currentDirection;
         }
 
+        //snake intersects with food
         if (snake[0].hitbox().intersects(food.hitbox())) {
             food.position = new Vector2(Math.round(Math.random() * (canvasElement.width - food.width / 2) - food.width / 2), Math.round(Math.random() * (canvasElement.height - food.height / 2) - food.height / 2));
 
@@ -227,8 +252,10 @@
             while (food.position.y % snake[0].height != 0) {
                 food.position.y = Math.round(Math.random() * (canvasElement.height - food.height / 2) - food.height / 2);
             }
+
+            //create 5 more pieces
             for (var i = 0; i < 5; i++) {
-                var newSnake = new SnakePiece(new Vector2(snake[snake.length - 1].position.x, snake[snake.length - 1].position.y), snake[snake.length - 1].width, "green");
+                var newSnake = new SnakePiece(new Vector2(snake[snake.length - 1].position.x, snake[snake.length - 1].position.y), snake[snake.length - 1].width, snake[snake.length - 1].speed, snake[snake.length - 1].color);
 
                 switch (snake[snake.length - 1].currentDirection) {
                     case snakeDirection.Up:
