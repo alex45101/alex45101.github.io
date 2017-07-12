@@ -2,47 +2,84 @@
 <title>Swah</title>
 
 <body>
-    <canvas id="canvas" style="background: cornflowerblue" width="500px" height="300px"></canvas>
+    <canvas id="canvas" style="background: cornflowerblue; border-style: solid; border-width: 15px; border-color: Orange" width="1200px"
+        height="800px"></canvas>
 </body>
 
 <script>
+    var snakeDirection = {
+        None: 0,
+        Left: 1,
+        Right: 2,
+        Up: 3,
+        Down: 4
+    };
+
     var canvasElement;
     var context;
-
+    var scoreLabel;
     var snake = [];
+    var food;
 
     window.onload = () => {
         canvasElement = document.getElementById("canvas");
-        canvasElement.onkeypress = (event) => {
+        canvasElement.onkeydown = (event) => {
             //up
             if (event.keyCode == 87 || event.keyCode == 38) {
-                snake[0].currentDirection = snakeDirection.Up;
+                if (snake[0].currentDirection != snakeDirection.Down)
+                    snake[0].nextDirection = snakeDirection.Up;
             }
             //down
             else if (event.keyCode == 83 || event.keyCode == 40) {
-                snake[0].currentDirection = snakeDirection.Down;
+                if (snake[0].currentDirection != snakeDirection.Up)
+                    snake[0].nextDirection = snakeDirection.Down;
             }
             //left
             else if (event.keyCode == 65 || event.keyCode == 37) {
-                snake[0].currentDirection = snakeDirection.Left;
+                if (snake[0].currentDirection != snakeDirection.Right)
+                    snake[0].nextDirection = snakeDirection.Left;
             }
             //right
             else if (event.keyCode == 68 || event.keyCode == 39) {
-                snake[0].currentDirection = snakeDirection.Right;
+                if (snake[0].currentDirection != snakeDirection.Left)
+                    snake[0].nextDirection = snakeDirection.Right;
             }
         };
         canvasElement.setAttribute("tabindex", 0);
         canvasElement.focus();
 
         context = canvasElement.getContext("2d");
-        snake.push(new SnakePiece(new Vector2(10, 10), 10, "red"));
+        snake.push(new SnakePiece(new Vector2(20, 20), 20, "red"));
 
-        setInterval(gameLoop(), 1000/60 );
+        food = new Food(new Vector2(100, 200), 20, "yellow");
+
+        scoreLabel = new Label("30px Arial", snake.length, new Vector2(canvasElement.width - 50, 40), "Black");
+
+        setInterval(gameLoop, 80);
     };
 
     function Vector2(x, y) {
         this.x = x;
         this.y = y;
+    }
+
+    class HitBox {
+        constructor(x, y, width, height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+
+        intersects(hitbox) {
+            if (this.x + this.width > hitbox.x &&
+                this.x < hitbox.x + hitbox.width &&
+                this.y > hitbox.y - hitbox.height &&
+                this.y - this.height < hitbox.y) {
+                return true;
+            }
+            return false;
+        }
     }
 
     class Sprite {
@@ -61,21 +98,62 @@
         }
     }
 
-    var snakeDirection = {
-        None: 0,
-        Left: 1,
-        Right: 2,
-        Up: 3,
-        Down: 4
-    };
+    class Label {
+        constructor(font, text, position, color) {
+            this.font = font;
+            this.text = text;
+            this.position = position;
+            this.color = color;
+        }
+
+        draw() {
+            context.beginPath();
+            context.font = this.font;
+            context.fillStyle = this.color;
+            context.fillText(this.text, this.position.x, this.position.y);
+            context.closePath();
+        }
+    }
 
     class SnakePiece extends Sprite {
+        hitbox() {
+            return new HitBox(this.position.x, this.position.y, this.width, this.height);
+        }
+
         constructor(position, size, color) {
             super(position, size, size, color);
             this.currentDirection = snakeDirection.None;
+            this.nextDirection = snakeDirection.None;
         }
 
         update() {
+            switch (this.nextDirection) {
+                case snakeDirection.Up:
+                    if (this.position.y % this.height == 0) {
+                        this.currentDirection = this.nextDirection;
+                        this.nextDirection = snakeDirection.None;
+                    }
+                    break;
+                case snakeDirection.Down:
+                    if (this.position.y % this.height == 0) {
+                        this.currentDirection = this.nextDirection;
+                        this.nextDirection = snakeDirection.None;
+                    }
+                    break;
+                case snakeDirection.Left:
+                    if (this.position.x % this.width == 0) {
+                        this.currentDirection = this.nextDirection;
+                        this.nextDirection = snakeDirection.None;
+                    }
+                    break;
+                case snakeDirection.Right:
+                    if (this.position.x % this.width == 0) {
+                        this.currentDirection = this.nextDirection;
+                        this.nextDirection = snakeDirection.None;
+                    }
+                    break;
+            }
+
             if (this.currentDirection == snakeDirection.Left) {
                 this.position.x -= this.width;
             }
@@ -83,16 +161,34 @@
                 this.position.x += this.width;
             }
             else if (this.currentDirection == snakeDirection.Up) {
-                this.position.y += this.height;
+                this.position.y -= this.height;
             }
             else if (this.currentDirection == snakeDirection.Down) {
-                this.position.y -= this.height;
+                this.position.y += this.height;
             }
         }
 
         draw() {
             super.draw();
         }
+    }
+
+    class Food extends Sprite {
+        hitbox() {
+            return new HitBox(this.position.x, this.position.y, this.width, this.height);
+        }
+
+        constructor(position, size, color) {
+            super(position, size, size, color);
+        }
+    }
+
+    function lose() {
+        snake = [];
+
+        snake.push(new SnakePiece(new Vector2(20, 20), 20, "red"));
+        food = new Food(new Vector2(100, 200), 20, "yellow");
+        scoreLabel.text = snake.length;
     }
 
     function gameLoop() {
@@ -103,7 +199,61 @@
 
     function update() {
         for (var i = 0; i < snake.length; i++) {
+            for (var j = 0; j < snake.length; j++) {
+                if (i != j && snake[i].hitbox().intersects(snake[j].hitbox())) {
+                    console.log("lost");
+                    lose();
+                    break;
+                }
+            }
             snake[i].update();
+        }
+
+        if (snake[0].position.x < 0 || snake[0].position.x + snake[0].width > canvasElement.width || snake[0].position.y < 0 || snake[0].position.y + snake[0].height > canvasElement.height) {
+            lose();
+        }
+
+        for (var i = snake.length - 1; i > 0; i--) {
+            snake[i].currentDirection = snake[i - 1].currentDirection;
+        }
+
+        if (snake[0].hitbox().intersects(food.hitbox())) {
+            food.position = new Vector2(Math.round(Math.random() * (canvasElement.width - food.width / 2) - food.width / 2), Math.round(Math.random() * (canvasElement.height - food.height / 2) - food.height / 2));
+
+            while (food.position.x % snake[0].width != 0) {
+                food.position.x = Math.round(Math.random() * (canvasElement.width - food.width / 2) - food.width / 2);
+            }
+
+            while (food.position.y % snake[0].height != 0) {
+                food.position.y = Math.round(Math.random() * (canvasElement.height - food.height / 2) - food.height / 2);
+            }
+            for (var i = 0; i < 5; i++) {
+                var newSnake = new SnakePiece(new Vector2(snake[snake.length - 1].position.x, snake[snake.length - 1].position.y), snake[snake.length - 1].width, "green");
+
+                switch (snake[snake.length - 1].currentDirection) {
+                    case snakeDirection.Up:
+                        newSnake.position.y += newSnake.height;
+                        break;
+                    case snakeDirection.Down:
+                        newSnake.position.y -= newSnake.height;
+                        break;
+                    case snakeDirection.Left:
+                        newSnake.position.x += newSnake.width;
+                        break;
+                    case snakeDirection.Right:
+                        newSnake.position.x -= newSnake.width;
+                        break;
+                }
+
+                newSnake.currentDirection = snake[snake.length - 1].currentDirection;
+
+
+                snake.push(newSnake);
+            }
+            scoreLabel.text = snake.length;
+
+            console.log(food.position);
+            console.log(snake.length);
         }
     }
 
@@ -111,6 +261,9 @@
         for (var i = 0; i < snake.length; i++) {
             snake[i].draw();
         }
+
+        food.draw();
+        scoreLabel.draw();
     }
 
 </script>
