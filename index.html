@@ -62,7 +62,7 @@
 <body>
     <canvas id="canvas" width="1800px" height="1000px"></canvas>
     <form>
-        <input class="btn" id="restart" type="button" value="Play Again" />
+        <input class="btn" id="restart" type="button" value="Play Again" onclick="restartClick()" />
     </form>
 </body>
 
@@ -81,9 +81,10 @@
     var scoreLabel;
     var snake = [];
     var food;
+    var isGameOver = false;
 
     window.onload = () => {
-        restartButton =document.getElementById("restart");
+        restartButton = document.getElementById("restart");
         restartButton.style.visibility = "hidden";
 
         canvasElement = document.getElementById("canvas");
@@ -121,6 +122,18 @@
 
         setInterval(gameLoop, 50);
     };
+
+    function restartClick() {
+        snake = [];
+
+        snake.push(new SnakePiece(new Vector2(20, 20), 20, 20, "#ff3333"));
+        food = new Food(new Vector2(100, 200), 20, "yellow");
+        scoreLabel.text = snake.length - 1;
+        isGameOver = false;
+        canvasElement.focus();
+        
+        restartButton.style.visibility = "hidden";
+    }
 
     function Vector2(x, y) {
         this.x = x;
@@ -254,17 +267,16 @@
     }
 
     function lose() {
-        snake = [];
-
-        snake.push(new SnakePiece(new Vector2(20, 20), 20, 20, "#ff3333"));
-        food = new Food(new Vector2(100, 200), 20, "yellow");
-        scoreLabel.text = snake.length - 1;
+        isGameOver = true;
+        restartButton.style.visibility = "visible";
     }
 
     function gameLoop() {
-        context.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        update();
-        draw();
+        if (!isGameOver) {
+            context.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            update();
+            draw();
+        }
     }
 
     function update() {
