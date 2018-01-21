@@ -1,22 +1,26 @@
 <html>
-    <head>
-        <title>Swah</title>
-        <h1>Pick application to use</h1>
-    </head>
-    <body>
-        <form>
-            <button type="button" value="Snake" onclick="clicked(this)">Snake</button>
-            <button tpye="button" value="Rainbow" onclick="clicked(this)">R6 Team Picker</button>
-        </form>
-    </body>
+
+<head>
+    <title>Swah</title>
+    <h1>Pick application to use</h1>
+</head>
+
+<body>
+    <form>
+        <button type="button" value="Snake" onclick="clicked(this)">Snake</button>
+        <button type="button" value="Rainbow" onclick="clicked(this)">R6 Team Picker</button>
+    </form>
+</body>
+
 </html>
 
 <script>
-    function clicked(button){
-        if(button.value == "Snake"){
+    function clicked(button) {
+
+        if (button.value == "Snake") {
             window.location.href = "SnakeGame.html";
         }
-        else if(button.value == "Rainbow"){
+        else if (button.value == "Rainbow") {
             window.location.href = "RainbowSixTeamPicker.html";
         }
     }
