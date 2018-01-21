@@ -203,7 +203,7 @@
                 var pointTotal = 0;
 
                 for (var i = 0; i < playingPlayers.length; i++) {
-                    let offset = Math.floor(Math.random() * 5) + 1;
+                    let offset = Math.floor(Math.random() * 3);
                     let operation = Math.floor(Math.random() * 2);
 
                     if (operation % 2 == 0) {
@@ -219,6 +219,8 @@
                 console.log("Total Points: " + pointTotal);
 
                 playingPlayers.sort((a, b) => { return b.points - a.points });
+
+                console.log(playingPlayers);
 
                 putPlayersInRandomTeams();
 
