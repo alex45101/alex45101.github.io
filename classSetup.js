@@ -57,6 +57,30 @@ class Label {
     }
 }
 
+class Snow{
+
+}
+
+class Flake extends Sprite{
+    constructor(position, size, speed, color){
+        super(position, size, size, color);
+        this.speed = speed;
+    }
+
+    update(){
+        this.position += this.speed;
+    }
+
+    draw(){
+        context.beginPath();
+        context.lineWidth = 4;
+        context.strokeStyle = "#ffffff";
+        context.strokeRect(this.position.x, this.position.y, this.size, this.size);
+     
+        context.closePath();        
+    }
+}
+
 class SnakePiece extends Sprite {
     hitbox() {
         return new HitBox(this.position.x, this.position.y, this.width, this.height);
