@@ -1,79 +1,23 @@
 <html>
-
-<style>
-    body {
-        background: orange;
-        padding-top: 10px;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    canvas {
-        background: #80bdff;
-        padding: 0;
-        margin: auto;
-        width: 95%;
-
-        position: relative;
-    }
-
-    form {
-        z-index: 2;
-        position: absolute;
-        top: 40%;
-        left: 45%;
-        background-position: center;
-    }
-
-    .btn {
-        display: block;
-        background: #34d976;
-        background-image: -webkit-linear-gradient(top, #34d976, #5ab82b);
-        background-image: -moz-linear-gradient(top, #34d976, #5ab82b);
-        background-image: -ms-linear-gradient(top, #34d976, #5ab82b);
-        background-image: -o-linear-gradient(top, #34d976, #5ab82b);
-        background-image: linear-gradient(to bottom, #34d976, #5ab82b);
-        -webkit-border-radius: 4;
-        -moz-border-radius: 4;
-        border-radius: 4px;
-        text-shadow: 1px 1px 3px #666666;
-        -webkit-box-shadow: 0px 1px 5px #666666;
-        -moz-box-shadow: 0px 1px 5px #666666;
-        box-shadow: 0px 1px 5px #666666;
-        font-family: Arial;
-        color: #ffffff;
-        font-size: 25px;
-        padding: 10px 20px 10px 20px;
-        text-decoration: none;
-    }
-
-    .btn:hover {
-        background: #affc3c;
-        background-image: -webkit-linear-gradient(top, #affc3c, #7ed934);
-        background-image: -moz-linear-gradient(top, #affc3c, #7ed934);
-        background-image: -ms-linear-gradient(top, #affc3c, #7ed934);
-        background-image: -o-linear-gradient(top, #affc3c, #7ed934);
-        background-image: linear-gradient(to bottom, #affc3c, #7ed934);
-        text-decoration: none;
-    }
-</style>
-
-<title>Swah</title>
-
-<body>
-    <script src="classSetup.js"></script>
-    <script src="game.js"></script>
-
-    <audio autoplay loop>  
-        <!--<source src="https://alex45101.github.io/music1.mp3" type="audio/mpeg">      -->
-    </audio>
-
-    <canvas id="canvas" width="1800px" height="900px"></canvas>
-    <form>
-        <input class="btn" id="restart" type="button" value="Play Again" onclick="restartClick()" />
-    </form>
-</body>
-
+    <head>
+        <title>Swah</title>
+        <h1>Pick application to use</h1>
+    </head>
+    <body>
+        <form>
+            <button type="button" value="Snake" onclick="clicked(this)">Snake</button>
+            <button tpye="button" value="Rainbow" onclick="clicked(this)">R6 Team Picker</button>
+        </form>
+    </body>
 </html>
+
+<script>
+    function clicked(button){
+        if(button.value == "Snake"){
+            window.location.href = "SnakeGame.html";
+        }
+        else if(button.value == "Rainbow"){
+            window.location.href = "RainbowSixTeamPicker.html";
+        }
+    }
+</script>

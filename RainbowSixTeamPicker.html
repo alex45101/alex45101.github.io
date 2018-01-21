@@ -66,16 +66,15 @@
 
                     let info = JSON.parse(response);
 
-                    if (!info.player.stats.ranked.has_played) {
-                        this.kd = info.player.stats.casual.kd;
-                        this.wlr = info.player.stats.casual.wlr;
-                        this.playTime = info.player.stats.casual.playtime;
-                    }
-                    else {
-                        this.kd = (info.player.stats.casual.kd + info.player.stats.ranked.kd) / 2;
-                        this.wlr = (info.player.stats.casual.wlr + info.player.stats.ranked.wlr) / 2;
-                        this.playTime = info.player.stats.casual.playtime + info.player.stats.ranked.playtime;
-                    }
+                    this.kd = info.player.stats.casual.kd;
+                    this.wlr = info.player.stats.casual.wlr;
+                    this.playTime = info.player.stats.casual.playtime;
+
+                    if (info.player.stats.ranked.has_played) {
+                        this.kd = (this.kd + info.player.stats.ranked.kd) / 2;
+                        this.wlr = (this.wlr + info.player.stats.ranked.wlr) / 2;
+                        this.playTime = info.player.stats.ranked.playtime;
+                    }                    
 
                     this.points += this.kd / 0.1;
                     this.points += this.kd / 0.075;
@@ -142,8 +141,8 @@
             players.push(new Player(usernameButton.value, usernameButton));
             players.isPlaying = false;
 
-            usernameButton.onclick = (event) => {
-                usernameButton.selected = !usernameButton.selected;
+            usernameButton.onclick = (event) => {               
+                usernameButton.selected = !usernameButton.selected;                
                 players[i].isPlaying = usernameButton.selected;
 
                 if (!players[i].hasUserInfo) {
@@ -161,8 +160,7 @@
                     }
                 }
                 else {
-                    playingPlayers.splice(i, 1);
-
+                    playingPlayers.splice(findPlayingPlayerIndex(players[i]), 1);                  
                     usernameButton.style.backgroundColor = "";
                 }
 
@@ -198,12 +196,26 @@
                 putPlayersInSkillOrder(0, 2);
             }
             else if (button.value == "Random") {
-                putPlayersInRandomTeams();
+                putPlayersInRandomOrder();
             }
         }
         else {
             alert("There is one player selected or more than 10 players are selected");
         }
+    }
+
+    function putPlayersInRandomOrder(){
+        let temp = [];
+        let length = playingPlayers.length;
+        for(var i = 0; i < length; i++){
+            var randIndex = Math.floor(Math.random() * playingPlayers.length);
+            temp.push(playingPlayers[randIndex]);
+            playingPlayers.splice(randIndex, 1);
+        }
+
+        playingPlayers = temp;
+
+        putPlayersInRandomTeams();
     }
 
     function putPlayersInRandomTeams() {
@@ -238,7 +250,7 @@
         var pointTotal = 0;
 
         for (var i = 0; i < playingPlayers.length; i++) {
-            let offset = Math.floor(Math.random() * (maxOffset - minOffset + 1) ) + minOffset;
+            let offset = Math.floor(Math.random() * (maxOffset - minOffset + 1)) + minOffset;
             let operation = Math.floor(Math.random() * 2);
 
             if (operation % 2 == 0) {
@@ -272,7 +284,7 @@
         console.log("Orange Team Points: " + teamPoints[1]);
     }
 
-    function findPlayerIndex(username) {
+    function findPlayingPlayerIndex(username) {
         if (typeof username === "string") {
             for (var i = 0; i < players.length; i++) {
                 if (username == players[i].username) {

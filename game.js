@@ -26,9 +26,6 @@ window.onload = () => {
     restartButton = document.getElementById("restart");
     restartButton.style.visibility = "hidden";
 
-    //temp
-    window.location.href = "Home.html";
-
     setGhostSnake();
     test = new Flake(new Vector2(100, 100), 50, new Vector2(0, 0), "#ffffff");
 
