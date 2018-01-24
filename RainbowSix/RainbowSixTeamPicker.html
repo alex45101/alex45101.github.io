@@ -1,4 +1,6 @@
 <style>
+    
+
     .center {
         margin: auto;
         margin-top: 2.5%;
@@ -9,6 +11,57 @@
     table.center {
         border: solid;
         text-align: right;
+    }
+
+    .btn {
+        -webkit-border-radius: 8;
+        -moz-border-radius: 8;
+        border-radius: 8px;
+        font-family: Arial;
+        color: #ffffff;
+        font-size: 20px;
+        background: #616161;
+        padding: 10px 20px 10px 20px;
+        text-decoration: none;
+    }
+
+    .btn:hover {
+        background: #474747;
+        text-decoration: none;
+    }
+
+    .btnLoaded {
+        -webkit-border-radius: 8;
+        -moz-border-radius: 8;
+        border-radius: 8px;
+        font-family: Arial;
+        color: #ffffff;
+        font-size: 20px;
+        background: #33cc33;
+        padding: 10px 20px 10px 20px;
+        text-decoration: none;
+    }
+
+    .btnLoaded:hover {
+        background: #2db32d;
+        text-decoration: none;
+    }
+
+    .btnLoading {
+        -webkit-border-radius: 8;
+        -moz-border-radius: 8;
+        border-radius: 8px;
+        font-family: Arial;
+        color: #ffffff;
+        font-size: 20px;
+        background: #ffcc00;
+        padding: 10px 20px 10px 20px;
+        text-decoration: none;
+    }
+
+    .btnLoading:hover {
+        background: #ebb903;
+        text-decoration: none;
     }
 </style>
 
@@ -25,9 +78,9 @@
         <h2 class="center">Players</h2>
         <div class="center" id="usernameButtons"></div>
         <div class="center" id="teamOptions">
-            <button type="button" value="Skill" onclick="makeTeams(this)">Skill</button>
-            <button type="button" value="Spice" onclick="makeTeams(this)">Spice</button>
-            <button type="button" value="Random" onclick="makeTeams(this)">Random</button>
+            <button class="btn" type="button" value="Skill" onclick="makeTeams(this)">Skill</button>
+            <button class="btn" type="button" value="Spice" onclick="makeTeams(this)">Spice</button>
+            <button class="btn" type="button" value="Random" onclick="makeTeams(this)">Random</button>
         </div>
         <div id="teamLineUp"></div>
     </form>

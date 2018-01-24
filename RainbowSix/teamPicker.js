@@ -23,7 +23,8 @@ class Player {
                 this.hasUserInfo = true;
 
                 if (this.isPlaying) {
-                    this.button.style.backgroundColor = "green";
+                    this.button.classList.remove("btnLoading");                    
+                    this.button.classList.add("btnLoaded");
                 }
 
                 let info = JSON.parse(response);
@@ -99,11 +100,14 @@ function setUpPlayerButtons() {
         usernameButton.value = usernames[i];
         usernameButton.selected = false;
         usernameButton.firstClick = false;
+        usernameButton.classList.add("btn");
 
         players.push(new Player(usernameButton.value, usernameButton));
         players.isPlaying = false;
 
         usernameButton.onclick = (event) => {
+            usernameButton.classList.remove("btnLoaded");
+            usernameButton.classList.remove("btnLoading");
             usernameButton.selected = !usernameButton.selected;
             players[i].isPlaying = usernameButton.selected;
 
@@ -114,11 +118,11 @@ function setUpPlayerButtons() {
             if (usernameButton.selected) {
                 playingPlayers.push(players[i]);
 
-                if (players[i].hasUserInfo) {
-                    usernameButton.style.backgroundColor = "green";
+                if (players[i].hasUserInfo) {                    
+                    usernameButton.classList.add("btnLoaded");
                 }
-                else {
-                    usernameButton.style.backgroundColor = "yellow";
+                else {                    
+                    usernameButton.classList.add("btnLoading");
                 }
             }
             else {
