@@ -1,0 +1,36 @@
+<style>
+    .center {
+        margin: auto;
+        margin-top: 2.5%;
+        margin-bottom: 1.5%;
+        text-align: center;
+    }
+
+    table.center {
+        border: solid;
+        text-align: right;
+    }
+</style>
+
+<html>
+
+<head>
+    <title>Rainbow Six Team Picker</title>
+    <h1 class="center">Rainbow Six Team Picker</h1>
+</head>
+
+<body>
+    <script tpye="text/javascript" src="teamPicker.js"></script>
+    <form>
+        <h2 class="center">Players</h2>
+        <div class="center" id="usernameButtons"></div>
+        <div class="center" id="teamOptions">
+            <button type="button" value="Skill" onclick="makeTeams(this)">Skill</button>
+            <button type="button" value="Spice" onclick="makeTeams(this)">Spice</button>
+            <button type="button" value="Random" onclick="makeTeams(this)">Random</button>
+        </div>
+        <div id="teamLineUp"></div>
+    </form>
+</body>
+
+</html>
