@@ -83,6 +83,7 @@ function setGhostSnake() {
     ghostSnakeDict[nextSnake]["food"]["current"] = new Food(new Vector2(100, 200), 20, "#b5b54a");
     ghostSnakeDict[nextSnake]["food"]["pos"] = [];
     ghostSnakeDict[nextSnake]["food"]["count"] = 0;
+    ghostSnakeDict[nextSnake]["food"]["playerCount"] = 0;
 }
 
 function restartClick() {
@@ -93,7 +94,7 @@ function restartClick() {
 
     setGhostSnake();
 
-    ghostSnakeDict[currentSnake]["snake"].push(new SnakePiece(new Vector2(20, 20), 20, 20, "#999999"));   
+    ghostSnakeDict[currentSnake]["snake"].push(new SnakePiece(new Vector2(20, 20), 20, 20, "#999999"));
 
     snake.push(new SnakePiece(new Vector2(20, 20), 20, 20, "#ff3333"));
     food = new Food(new Vector2(100, 200), 20, "yellow");
@@ -120,9 +121,11 @@ function update() {
     test.update();
     scoreLabel.position.x = canvasElement.width - context.measureText(snake.length - 1).width * 2;
 
-    ghostSnakeDict[nextSnake]["snakeDirection"].push(snake[0].currentDirection);
+    if (snake[0].currentDirection != snakeDirection.None) {
+        ghostSnakeDict[nextSnake]["snakeDirection"].push(snake[0].currentDirection);
+    }
 
-    if (nextSnake > 0) {
+    if (nextSnake > 0 && snake[0].currentDirection != snakeDirection.None) {
         ghostSnakeDict[currentSnake]["snake"][0].nextDirection = ghostSnakeDict[currentSnake]["snakeDirection"][ghostSnakeDict[nextSnake]["countDirection"]];
 
         checkLosing(ghostSnakeDict[currentSnake]["snake"], true);
@@ -172,22 +175,30 @@ function following(snakeArray) {
     }
 }
 
-function intersectWithFood(snakeArray, foodToCheck, isGhost) {    
+function intersectWithFood(snakeArray, foodToCheck, isGhost) {
 
     //snake intersects with food
-    if (snakeArray[0].hitbox().intersects(foodToCheck.hitbox())) {       
+    if (snakeArray[0].hitbox().intersects(foodToCheck.hitbox())) {
         if (!isGhost) {
-            foodToCheck.position = new Vector2(Math.round(Math.random() * (canvasElement.width - foodToCheck.width / 2) - foodToCheck.width / 2), Math.round(Math.random() * (canvasElement.height - foodToCheck.height / 2) - foodToCheck.height / 2));
+            console.log(ghostSnakeDict);
+            if (nextSnake < 1 || ghostSnakeDict[currentSnake]["food"]["playerCount"] >= ghostSnakeDict[currentSnake]["food"]["pos"].length) {
+                foodToCheck.position = new Vector2(Math.round(Math.random() * (canvasElement.width - foodToCheck.width / 2) - foodToCheck.width / 2), Math.round(Math.random() * (canvasElement.height - foodToCheck.height / 2) - foodToCheck.height / 2));
 
-            while (foodToCheck.position.x % snakeArray[0].width != 0) {
-                foodToCheck.position.x = Math.round(Math.random() * (canvasElement.width - foodToCheck.width / 2) - foodToCheck.width / 2);
+                while (foodToCheck.position.x % snakeArray[0].width != 0) {
+                    foodToCheck.position.x = Math.round(Math.random() * (canvasElement.width - foodToCheck.width / 2) - foodToCheck.width / 2);
+                }
+
+                while (foodToCheck.position.y % snakeArray[0].height != 0) {
+                    foodToCheck.position.y = Math.round(Math.random() * (canvasElement.height - foodToCheck.height / 2) - foodToCheck.height / 2);
+                }
             }
-
-            while (foodToCheck.position.y % snakeArray[0].height != 0) {
-                foodToCheck.position.y = Math.round(Math.random() * (canvasElement.height - foodToCheck.height / 2) - foodToCheck.height / 2);
+            else{
+                foodToCheck.position = ghostSnakeDict[currentSnake]["food"]["pos"][ghostSnakeDict[currentSnake]["food"]["playerCount"]];
+                ghostSnakeDict[currentSnake]["food"]["playerCount"]++;                
             }
-
+            
             ghostSnakeDict[nextSnake]["food"]["pos"].push(foodToCheck.position);
+
         } else {
             ghostSnakeDict[currentSnake]["food"]["current"].position = ghostSnakeDict[currentSnake]["food"]["pos"][ghostSnakeDict[currentSnake]["food"]["count"]];
             ghostSnakeDict[currentSnake]["food"]["count"]++;
