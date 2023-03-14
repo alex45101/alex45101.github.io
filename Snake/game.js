@@ -20,15 +20,12 @@ var isGameOver = false;
 
 var isSnowing = true;
 
-var test;
-
 window.onload = () => {
     restartButton = document.getElementById("restart");
     restartButton.style.visibility = "hidden";
 
     setGhostSnake();
-    test = new Flake(new Vector2(100, 100), 50, new Vector2(0, 0), "#ffffff");
-
+    
     canvasElement = document.getElementById("canvas");
     canvasElement.onkeydown = (event) => {
         //up
@@ -117,8 +114,7 @@ function gameLoop() {
     }
 }
 
-function update() {
-    test.update();
+function update() {    
     scoreLabel.position.x = canvasElement.width - context.measureText(snake.length - 1).width * 2;
 
     if (snake[0].currentDirection != snakeDirection.None) {
@@ -248,7 +244,6 @@ function draw() {
     }
 
     food.draw();
-    test.draw();
 
     scoreLabel.draw();
 }
