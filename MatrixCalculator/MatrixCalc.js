@@ -9,7 +9,7 @@ class matrix {
         this.id = matrixCounter;
         this.initialSetup = true;
 
-        this.vertices = [];
+        this.vertices = Array.from({ length: this.length }, () => new Array(width).fill(undefined));
 
         matrixCounter++;
     }
@@ -26,20 +26,25 @@ class matrix {
         table.id = "matrixTable-" + this.id.toString();
 
         //generate the cells for each position in the matrix
-        let newId = 0;
         for (var i = 0; i < this.length; i++) {
             let row = document.createElement("tr");
 
-            for (var j = 0; j < this.width; j++, newId++) {
+            for (var j = 0; j < this.width; j++) {
                 let cell = document.createElement("td");
-                
+
                 //CLEAN THIS UP
                 let textBox = document.createElement("input");
-                textBox.id = (newId).toString();
+                textBox.id = i.toString() + j.toString();
+                //textBox.value = textBox.id;
                 textBox.input = "text";
-                if (this.vertices[textBox.id] != undefined)
-                    textBox.value = this.vertices[textBox.id];
-                textBox.onchange = (event) => { this.vertices[textBox.id] = textBox.value; };
+
+                //TODO::::get the index from the id
+
+                this.vertices[i][j] = textBox.value;
+                //if (this.vertices[i][j] != undefined)
+                    //textBox.value = this.vertices[textBox.id];
+
+                textBox.onchange = (event) => { this.vertices[i][j] = textBox.value; };
 
                 cell.appendChild(textBox);
                 row.appendChild(cell);
@@ -49,10 +54,18 @@ class matrix {
         form.appendChild(table);
 
         //Generate Increase and Decrease Buttons
-        var buttons = this.generateResizeButtons();
+        var resizeButtons = this.generateResizeButtons();
 
-        for (var i = 0; i < buttons.length; i++) {
-            form.appendChild(buttons[i]);
+        for (var i = 0; i < resizeButtons.length; i++) {
+            form.appendChild(resizeButtons[i]);
+        }
+
+
+        //Generate Function Buttons
+        var funcButtons = this.generateFunctionButtons();
+
+        for(var i = 0; i < funcButtons.length; i++){
+            form.appendChild(funcButtons[i]);
         }
 
         currDiv.appendChild(form);
@@ -98,6 +111,17 @@ class matrix {
         return [decreaseButton, increaseButton];
     }
 
+    generateFunctionButtons(){
+        //generate the determinate button
+        let determinateButton = document.createElement("input");
+        determinateButton.id = "determinateButton-" + this.id.toString();
+        determinateButton.type = "button";
+        determinateButton.value = "Determinate";
+        determinateButton.onclick = () => this.determinateClick(determinateButton);
+
+        return [determinateButton];
+    }
+
     matrixResize(button) {
         //clear the table then regenerate it at the end
         this.clearTable();
@@ -117,20 +141,31 @@ class matrix {
         this.setUpTable();
     }
 
+
+    determinateClick(button){
+        var result = -69;
+
+        //uses 2x2 method
+        if(this.length == 2 && this.width == 2){
+            result = (this.vertices[0][0] * this.vertices[1][1]) - (this.vertices[0][1] * this.vertices[1][0])
+        }
+        else{
+
+        }
+
+        console.log(result);
+    }
+
     clearTable() {
         //remove the current form from the matrix div
         this.getCurrDiv().removeChild(document.getElementById("matrixForm-" + this.id.toString()));
     }
 }
 
-var mainMatrix = new matrix(3, 3);
-
-var matrices = [new matrix(2, 2), new matrix(5, 2), new matrix(4, 4)];
+var matrices = [new matrix(3, 3), new matrix(3, 3)];
 
 document.body.onload = () => {
-    mainMatrix.setUpTable();
-
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 2; i++) {
         matrices[i].setUpTable();
     }
 }
